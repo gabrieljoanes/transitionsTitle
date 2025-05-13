@@ -1,10 +1,5 @@
-
-def generate_title_and_blurb(text):
-    lines = text.strip().split("\n")
-    first_para = ""
-    for line in lines:
-        if line.strip():
-            first_para = line.strip()
-            break
-    title = first_para[:60] + "..." if len(first_para) > 60 else first_para
-    return title.strip(), first_para.strip()
+def generate_title_blurb(text):
+    first_paragraph = text.split("TRANSITION")[0].strip().split("\n")[0].strip()
+    title = first_paragraph[:80] + ("…" if len(first_paragraph) > 80 else "")
+    blurb = first_paragraph
+    return title, blurb

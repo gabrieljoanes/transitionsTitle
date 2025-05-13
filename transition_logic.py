@@ -1,35 +1,29 @@
-
+import openai
 import re
+import random
+import json
 
-TRANSITIONS = [
-    "Cependant, dans un autre coin de la Bretagne,",
-    "En parallèle, dans les communes voisines,",
-    "En changeant de sujet pour se concentrer sur l'histoire locale,"
-]
+def generate_transitions_and_output(text):
+    segments = re.split(r'\bTRANSITION\b', text)
+    transitions = []
+    output = ""
 
-def insert_transitions(text):
-    banner = "À savoir également dans votre département"
-    if banner not in text:
-        return text, []
+    for i in range(len(segments)-1):
+        para_a = segments[i].strip()
+        para_b = segments[i+1].strip()
+        prompt = f"{para_a}\nTRANSITION\n{para_b}"
 
-    before, after = text.split(banner, 1)
-    after = after.replace(banner, "")  # remove accidental duplicate
+        transition = "Dans une autre actualité,"  # Simulated placeholder
+        transitions.append(transition)
 
-    segments = after.split("TRANSITION")
-    output = before.strip() + "\n\n" + banner + "\n\n"
+    for i in range(len(transitions)):
+        output += segments[i].strip() + " " + transitions[i] + " "
+    output += segments[-1].strip()
 
-    transitions_used = []
+    # Insert À savoir également dans votre département logic
+    output_parts = output.split("\n")
+    first_part = output_parts[0].strip()
+    rest = "\n".join(output_parts[1:]).strip()
+    final_output = f"{first_part}\n\nÀ savoir également dans votre département\n\n{rest}"
 
-    for i, seg in enumerate(segments):
-        seg = seg.strip()
-        if not seg:
-            continue
-        if i == 0:
-            # First paragraph after banner: no transition
-            output += seg
-        else:
-            transition = TRANSITIONS[i - 1] if i - 1 < len(TRANSITIONS) else "[...]"
-            transitions_used.append(transition)
-            output += "\n" + transition + "\n" + seg
-
-    return output.strip(), transitions_used
+    return final_output, transitions
