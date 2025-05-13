@@ -1,35 +1,36 @@
-
 import streamlit as st
 import openai
 import re
-from title_blurb import generate_title_and_blurb
-from transition_logic import insert_transitions
-
-st.set_page_config(page_title="Générateur de transitions + Titre/Chapô structuré (v12)")
-
-st.title("🧠 Générateur de transitions + Titre/Chapô structuré (v12)")
-st.markdown("Collez un texte avec plusieurs TRANSITION. L'app générera un titre, un chapô et intégrera les transitions en respectant la structure demandée.")
+from title_blurb import generate_title_blurb
+from transition_logic import generate_transitions_and_output
 
 openai.api_key = st.secrets["OPENAI_API_KEY"]
 
-user_input = st.text_area("✍️ Texte de l'article (avec TRANSITION)", height=500)
+st.set_page_config(page_title="🧠 Générateur de transitions + Titre/Chapô structuré v12")
+st.title("🧠 Générateur de transitions + Titre/Chapô structuré (v12)")
+st.markdown("Collez un texte avec plusieurs `TRANSITION`. L'app générera un titre, un chapô et intégrera les transitions en respectant la structure demandée.")
 
-if st.button("Générer"):
-    if user_input:
-        title, blurb = generate_title_and_blurb(user_input)
-        full_output, transitions_used = insert_transitions(user_input)
+input_text = st.text_area("✍️ Texte de l'article (avec TRANSITION)", height=400)
 
- st.markdown(f"""### 📰 Titre
-{title}""")
+if st.button("✨ Générer le titre, chapô et transitions"):
+    if "TRANSITION" not in input_text:
+        st.warning("Aucun mot-clé TRANSITION trouvé dans le texte.")
+    else:
+        title, blurb = generate_title_blurb(input_text)
+        full_output, transitions = generate_transitions_and_output(input_text)
 
-st.markdown(f"""### ✍️ Chapô
-{blurb}""")
+        st.markdown("### 📰 Titre")
+        st.markdown(f"{title}")
 
-        st.markdown("### 🧾 Article final")
+        st.markdown("### ✍️ Chapô")
+        st.markdown(f"{blurb}")
+
+        st.markdown("---")
+        st.markdown("### 🔁 Transitions insérées dans l'article")
+
         st.markdown(full_output)
 
-        st.markdown("### 🔄 Transitions insérées")
-        for i, t in enumerate(transitions_used, 1):
-            st.markdown(f"**{i}.** {t}")
-    else:
-        st.warning("Veuillez coller un texte pour générer la sortie.")
+        st.markdown("---")
+        st.markdown("### 🧩 Transitions générées individuellement")
+        for i, t in enumerate(transitions, 1):
+            st.markdown(f"**Transition {i} :** {t}")
