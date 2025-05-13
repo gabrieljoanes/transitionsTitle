@@ -19,10 +19,12 @@ if st.button("Générer"):
         title, blurb = generate_title_and_blurb(user_input)
         full_output, transitions_used = insert_transitions(user_input)
 
-        st.markdown(f"### 📰 Titre
-**{title}**")
-        st.markdown(f"### 📝 Chapô
-{blurb}")
+ st.markdown(f"""### 📰 Titre
+{title}""")
+
+st.markdown(f"""### ✍️ Chapô
+{blurb}""")
+
         st.markdown("### 🧾 Article final")
         st.markdown(full_output)
 
